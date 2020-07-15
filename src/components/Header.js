@@ -6,14 +6,8 @@ function Header() {
     <React.Fragment>
       {/* {props.auth.currentUser.name} */}
       <h1>Portfolioh-No-You-Di'int</h1>
-      <ul>
-        <li>
-          <Link to='/'>Home</Link>
-        </li>
-        <li>
-          <Link to='/signIn'>Sign In</Link>
-        </li>
-      </ul>
+        <Link className='homeLink' to='/'>Home</Link><br></br>
+        <Link className='signInLink' to='/signIn'>Sign In</Link>
     </React.Fragment>
   );
 }

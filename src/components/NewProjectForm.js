@@ -17,8 +17,8 @@ function NewProjectForm(props) {
         description: event.target.description.value,
         repoUrl: event.target.repoUrl.value,
         deployedUrl: event.target.deployedUrl.value,
-        diagram: event.target.diagram.value,
-        timeOpen: fIntersectionObserverEntry.FieldValue.serverTimestamp()
+        // diagram: event.target.diagram.value,
+        timeOpen: firestore.FieldValue.serverTimestamp()
       }
     );
   }

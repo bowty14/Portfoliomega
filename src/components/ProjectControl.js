@@ -1,14 +1,15 @@
 import React from 'react';
 import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
-import EditProject from './EditProject';
+import ProjectDetail from './ProjectDetail';
+import EditProjectForm from './EditProjectForm';
 import { connect } from 'react-redux';
 import PropTypes from "prop-types";
 import { withFirestore, isLoaded } from 'react-redux-firebase';
 
 class ProjectControl extends React.Component {
 
-  construstro(props) {
+  constructor(props) {
     super(props);
     this.state = {
       selectedProject: null,
@@ -41,14 +42,17 @@ class ProjectControl extends React.Component {
 
   handleChangingSelectedProject = (id) => {
     this.props.firestore.get({ collection: 'projects', doc: id }).then((project) => {
+      console.log(project);
+      console.log(project.id);
+      console.log(project.get("authors"));
       const firestoreProject = {
         projectName: project.get('projectName'),
         authors: project.get('authors'),
         description: project.get('description'),
         repoUrl: project.get('repoUrl'),
         deployedUrl: project.get('deployedUrl'),
-        diagram: project.get('diagram'),
-        id: project.id
+        // diagram: project.get('diagram'),
+        id: project.id,
       }
       this.setState({ selectedProject: firestoreProject });
     });
@@ -85,11 +89,18 @@ class ProjectControl extends React.Component {
     if ((isLoaded(auth)) && (auth.currentUser != null)) {
       
       if (this.state.editing) {
-        currentlyVisibleState = <EditProject project={this.state.selectedProject} onEditProject={this.handleEditingProjectInList} />
+        currentlyVisibleState = <EditProjectForm project={this.state.selectedProject} onEditProject={this.handleEditingProjectInList} />
         buttonText = 'Return to Portfolio';
       } else if (this.state.formVisibleOnPage) {
-        currentlyVisibleState = <NewProjectForm auth={this.props.firesbase.auth()} onNewProjectCreation={this.handleAddingNewProject} />;
+        currentlyVisibleState = <NewProjectForm onNewProjectCreation={this.handleAddingNewProject} />;
         buttonText = 'Return to Portfolio';
+      }  else if (this.state.selectedProject != null) {
+        currentlyVisibleState = 
+        <ProjectDetail 
+          project = {this.state.selectedProject} 
+          onClickingDelete = {this.handleDeletingProject} 
+          onClickingEdit = {this.handleEditClick} />
+        buttonText = "Return to Project List";
       } else {
         currentlyVisibleState = <ProjectList onProjectSelection={this.handleChangingSelectedProject} />;
         buttonText = 'Add Project';
@@ -108,7 +119,7 @@ ProjectControl.propTypes = {
   masterProjectList: PropTypes.object
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     masterProjectList: state.masterProjectList,
     formVisibleOnPage: state.formVisibleOnPage

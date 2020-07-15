@@ -12,6 +12,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.header{
+  text-align: center;
+}
+.homeLink{
+  border: 1px solid black;
+  background-color: #337ab7;
+}
+.signInLink {
+  margin-top: 2%;
+  border: 1px solid black;
+  background-color: #337ab7;
+}
+.prjCrl {
+  text-align: center;
+}
 .reusBtn {
   color: #fff;
   background-color: #5cb85c;

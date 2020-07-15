@@ -15,7 +15,7 @@ function EditProjectForm(props) {
       description: event.target.description.value,
       repoUrl: event.target.repoUrl.value,
       deployedUrl: event.target.deployedUrl.value,
-      diagram: event.target.diagram.value
+      // diagram: event.target.diagram.value
     }
     return firestore.update({ collection: 'projects', doc: project.id }, propertiesToUpdate);
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Project from './Project';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-dom';
+import { useSelector } from 'react-redux';
 import { useFirestoreConnect, isLoaded } from 'react-redux-firebase';
 
 function ProjectList(props) {
@@ -10,21 +10,21 @@ function ProjectList(props) {
     { collection: 'projects'}
   ]);
 
-  const Projects = useSelector(state => state.firestore.ordered.projects);
+const projects = useSelector(state => state.firestore.ordered.projects);
 
-  if(isLoaded(Projects)) {
+  if(isLoaded(projects)) {
     return(
       <React.Fragment>
 
-        {Projects.map((project) => {
-          return <Quiz
+        {projects.map((project) => {
+          return <Project
           whenProjectClicked={props.onProjectSelection}
           projectName={project.projectName}
           authors={project.authors}
           description={project.description}
           repoUrl={project.repoUrl}
           deployedUrl={project.deployedUrl}
-          diagram={project.diagram}
+          // diagram={project.diagram}
           key={project.id} />
         })}
       </React.Fragment>
