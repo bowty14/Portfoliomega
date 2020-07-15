@@ -9,13 +9,13 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 function App() {
   return (
     <Router>
-      <Header />
+      <div className='header'><Header /></div>
       <Switch>
         <Route path='/signin'>
           <SignIn />
         </Route>
         <Route path='/'>
-          <ProjectControl />
+          <div className='prjCrl'><ProjectControl /></div>
         </Route>
       </Switch>
    </Router>
