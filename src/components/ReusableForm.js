@@ -27,11 +27,10 @@ function ReusableForm(props) {
           type='text'
           name='deployedUrl'
           placeholder='Opitional, enter url where site is hosted.' />
-        {/* <input
+         <input
           label='Project diagram'
-          type='image'
-          alt='projectDiagram'
-          name='diagram' /> */}
+          type='file'
+          name='diagram' />
         <button className='reusBtn' type='submit'>{props.buttonText}</button>
       </form>
     </React.Fragment>

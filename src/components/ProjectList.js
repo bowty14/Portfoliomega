@@ -1,31 +1,31 @@
-import React from 'react';
-import Project from './Project';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect, isLoaded } from 'react-redux-firebase';
+import React from "react";
+import Project from "./Project";
+import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { useFirestoreConnect, isLoaded } from "react-redux-firebase";
 
 function ProjectList(props) {
+  useFirestoreConnect([{ collection: "projects" }]);
 
-  useFirestoreConnect([
-    { collection: 'projects'}
-  ]);
+  const projects = useSelector((state) => state.firestore.ordered.projects);
 
-const projects = useSelector(state => state.firestore.ordered.projects);
-
-  if(isLoaded(projects)) {
-    return(
+  if (isLoaded(projects)) {
+    return (
       <React.Fragment>
-
         {projects.map((project) => {
-          return <Project
-          whenProjectClicked={props.onProjectSelection}
-          projectName={project.projectName}
-          authors={project.authors}
-          description={project.description}
-          repoUrl={project.repoUrl}
-          deployedUrl={project.deployedUrl}
-          // diagram={project.diagram}
-          key={project.id} />
+          return (
+            <Project
+              whenProjectClicked={props.onProjectSelection}
+              projectName={project.projectName}
+              authors={project.authors}
+              description={project.description}
+              repoUrl={project.repoUrl}
+              deployedUrl={project.deployedUrl}
+              // diagram={project.diagram}
+              id={project.id}
+              key={project.id}
+            />
+          );
         })}
       </React.Fragment>
     );
@@ -34,12 +34,12 @@ const projects = useSelector(state => state.firestore.ordered.projects);
       <React.Fragment>
         <h4>Loading...</h4>
       </React.Fragment>
-      )
-    }
+    );
   }
+}
 
-  ProjectList.propTypes = {
-    onProjectSelection: PropTypes.func
-  };
+ProjectList.propTypes = {
+  onProjectSelection: PropTypes.func,
+};
 
-  export default ProjectList;
+export default ProjectList;

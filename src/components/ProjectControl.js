@@ -43,6 +43,7 @@ class ProjectControl extends React.Component {
   handleChangingSelectedProject = (id) => {
     this.props.firestore.get({ collection: 'projects', doc: id }).then((project) => {
       console.log(project);
+      console.log(this.props.firestore.get({ collection: 'projects', doc: '8DcZ5x32GcCvWSVrZBDY' }));
       console.log(project.id);
       console.log(project.get("authors"));
       const firestoreProject = {
@@ -57,6 +58,8 @@ class ProjectControl extends React.Component {
       this.setState({ selectedProject: firestoreProject });
     });
   }
+
+  
 
   handleEditClick = () => {
     this.setState({ editing: true });
@@ -129,3 +132,9 @@ const mapStateToProps = state => {
 ProjectControl = connect(mapStateToProps)(ProjectControl);
 
 export default withFirestore(ProjectControl);
+
+
+
+
+
+
