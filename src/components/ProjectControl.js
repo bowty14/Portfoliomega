@@ -1,74 +1,76 @@
-import React from 'react';
-import NewProjectForm from './NewProjectForm';
-import ProjectList from './ProjectList';
-import ProjectDetail from './ProjectDetail';
-import EditProjectForm from './EditProjectForm';
-import { connect } from 'react-redux';
+import React from "react";
+import NewProjectForm from "./NewProjectForm";
+import ProjectList from "./ProjectList";
+import ProjectDetail from "./ProjectDetail";
+import EditProjectForm from "./EditProjectForm";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withFirestore, isLoaded } from 'react-redux-firebase';
+import { withFirestore, isLoaded } from "react-redux-firebase";
+
+const splashStyles = {
+  marginTop: '20%',
+}
 
 class ProjectControl extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       selectedProject: null,
       editing: false,
-      formVisibleOnPage: false
-    }
-  };
+      formVisibleOnPage: false,
+    };
+  
+  }
 
   handleEditingProjectInList = () => {
     this.setState({
       editing: false,
-      selectedProject: null
+      selectedProject: null,
     });
-  }
+  };
 
-  handleClick = ()=> {
+  handleClick = () => {
     if (this.state.selectedProject != null) {
       this.setState({
         selectedProject: null,
-        editing: false
+        editing: false,
       });
     } else {
-      this.setState(prevState => ({ formVisibleOnPage: !prevState.formVisibleOnPage })); 
+      this.setState((prevState) => ({
+        formVisibleOnPage: !prevState.formVisibleOnPage,
+      }));
     }
-  }
+  };
 
-  handleAddingNewProject = ()=> {
+  handleAddingNewProject = () => {
     this.setState({ formVisibleOnPage: !this.state.formVisibleOnPage });
-  }
+  };
 
   handleChangingSelectedProject = (id) => {
-    this.props.firestore.get({ collection: 'projects', doc: id }).then((project) => {
-      console.log(project);
-      console.log(this.props.firestore.get({ collection: 'projects', doc: '8DcZ5x32GcCvWSVrZBDY' }));
-      console.log(project.id);
-      console.log(project.get("authors"));
-      const firestoreProject = {
-        projectName: project.get('projectName'),
-        authors: project.get('authors'),
-        description: project.get('description'),
-        repoUrl: project.get('repoUrl'),
-        deployedUrl: project.get('deployedUrl'),
-        // diagram: project.get('diagram'),
-        id: project.id,
-      }
-      this.setState({ selectedProject: firestoreProject });
-    });
-  }
-
-  
+    this.props.firestore
+      .get({ collection: "projects", doc: id })
+      .then((project) => {
+        const firestoreProject = {
+          projectName: project.get("projectName"),
+          authors: project.get("authors"),
+          description: project.get("description"),
+          repoUrl: project.get("repoUrl"),
+          deployedUrl: project.get("deployedUrl"),
+          // diagram: project.get('diagram'),
+          id: project.id,
+        };
+        this.setState({ selectedProject: firestoreProject });
+      });
+  };
 
   handleEditClick = () => {
     this.setState({ editing: true });
-  }
+  };
 
   handleDeletingProject = (id) => {
-    this.props.firestore.delete({ collection: 'projects', doc: id});
+    this.props.firestore.delete({ collection: "projects", doc: id });
     this.setState({ selectedProject: null });
-  }
+  };
 
   render() {
     let currentlyVisibleState = null;
@@ -80,38 +82,59 @@ class ProjectControl extends React.Component {
         <React.Fragment>
           <h4>Loading...</h4>
         </React.Fragment>
-      )
+      );
     }
-    if ((isLoaded(auth)) && (auth.currentUser == null)) {
+    if (isLoaded(auth) && auth.currentUser == null) {
+      console.log(auth.currentUser, "user returning null");
       return (
-        <React.Fragment>
-          <h4>You must be signed in to access your portfolio.</h4>
-        </React.Fragment>
-      )
+        <div style={splashStyles}>
+          <h3>
+            Welcome to Portfoliomega.
+            <br />
+          </h3>
+          <h6>
+            Please <a href="/signIn">sign in</a> to access your portfolio
+          </h6>
+        </div>
+      );
     }
-    if ((isLoaded(auth)) && (auth.currentUser != null)) {
-      
+    if (isLoaded(auth) && auth.currentUser != null) {
       if (this.state.editing) {
-        currentlyVisibleState = <EditProjectForm project={this.state.selectedProject} onEditProject={this.handleEditingProjectInList} />
-        buttonText = 'Return to Portfolio';
+        currentlyVisibleState = (
+          <EditProjectForm
+            project={this.state.selectedProject}
+            onEditProject={this.handleEditingProjectInList}
+          />
+        );
+        buttonText = "Return to Portfolio";
       } else if (this.state.formVisibleOnPage) {
-        currentlyVisibleState = <NewProjectForm onNewProjectCreation={this.handleAddingNewProject} />;
-        buttonText = 'Return to Portfolio';
-      }  else if (this.state.selectedProject != null) {
-        currentlyVisibleState = 
-        <ProjectDetail 
-          project = {this.state.selectedProject} 
-          onClickingDelete = {this.handleDeletingProject} 
-          onClickingEdit = {this.handleEditClick} />
+        currentlyVisibleState = (
+          <NewProjectForm onNewProjectCreation={this.handleAddingNewProject} />
+        );
+        buttonText = "Return to Portfolio";
+      } else if (this.state.selectedProject != null) {
+        currentlyVisibleState = (
+          <ProjectDetail
+            project={this.state.selectedProject}
+            onClickingDelete={this.handleDeletingProject}
+            onClickingEdit={this.handleEditClick}
+          />
+        );
         buttonText = "Return to Project List";
       } else {
-        currentlyVisibleState = <ProjectList onProjectSelection={this.handleChangingSelectedProject} />;
-        buttonText = 'Add Project';
+        currentlyVisibleState = (
+          <ProjectList
+            onProjectSelection={this.handleChangingSelectedProject}
+          />
+        );
+        buttonText = "Add Project";
       }
       return (
         <React.Fragment>
           {currentlyVisibleState}
-          <button className='contlBtn' onClick={this.handleClick}>{buttonText}</button>
+          <button className="contlBtn" onClick={this.handleClick}>
+            {buttonText}
+          </button>
         </React.Fragment>
       );
     }
@@ -119,22 +142,16 @@ class ProjectControl extends React.Component {
 }
 
 ProjectControl.propTypes = {
-  masterProjectList: PropTypes.object
+  masterProjectList: PropTypes.object,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     masterProjectList: state.masterProjectList,
-    formVisibleOnPage: state.formVisibleOnPage
-  }
-}
+    formVisibleOnPage: state.formVisibleOnPage,
+  };
+};
 
 ProjectControl = connect(mapStateToProps)(ProjectControl);
 
 export default withFirestore(ProjectControl);
-
-
-
-
-
-
